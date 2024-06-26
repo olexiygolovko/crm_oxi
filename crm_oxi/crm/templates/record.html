@@ -1,48 +1,54 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% block content %}
+
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+<a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'update_record' customer_record.id %}" class="btn btn-secondary">Update Record</a>
+<br></br>
 
 <div class="card">
   <div class="card-header">
-    {{ customer_record.first_name }} 
-    {{ customer_record.last_name }}
+    {{ customer_record.company_name }}
   </div>
   <div class="card-body">
     <p class="card-text">
-        <strong>Email: </strong>{{ customer_record.email }}
+      <strong>Name: </strong>{{ customer_record.first_name }} {{ customer_record.last_name }}
     </p>
-
-    <p class="card-text">
-        <strong>Phone: </strong>{{ customer_record.phone }}
-    </p>
-
-    <p class="card-text">
-        <strong>Address: </strong>{{ customer_record.address }}
-    </p>
-
-    <p class="card-text">
-        <strong>City: </strong>{{ customer_record.city }}
-    </p>
-
-    <p class="card-text">
-        <strong>State: </strong>{{ customer_record.state }}
-    </p>
-
-    <p class="card-text">
-        <strong>Zipcode: </strong>{{ customer_record.zipcode }}
-    </p>
-
-    <p class="card-text">
-        <strong>Created At: </strong>{{ customer_record.created_at }}
-    </p>
-
-    <p class="card-text">
-        <strong>Id: </strong>{{ customer_record.id }}
-    </p>
-
+    <p class="card-text"><strong>Email: </strong>{{ customer_record.email }}</p>
+    <p class="card-text"><strong>Phone: </strong>{{ customer_record.phone }}</p>
+    <p class="card-text"><strong>Address: </strong>{{ customer_record.address }}</p>
+    <p class="card-text"><strong>City: </strong>{{ customer_record.city }}</p>
+    <p class="card-text"><strong>State: </strong>{{ customer_record.state }}</p>
+    <p class="card-text"><strong>Zipcode: </strong>{{ customer_record.zipcode }}</p>
+    <p class="card-text"><strong>Created At: </strong>{{ customer_record.created_at }}</p>
+    <p class="card-text"><strong>Id: </strong>{{ customer_record.id }}</p>
   </div>
 </div>
-<br></br>
-<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
 
-<a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
-
+<!-- Comments -->
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Comments</h3>
+  </div>
+  <div class="card-body">
+    <form method="post" class="form-inline">
+      {% csrf_token %}
+      <div styles="width:600px;" class="input-group mb-2">
+        <span class="form-control">{{ form.as_p }}</span>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-success h-100">Add</button>
+        </div>
+      </div>
+    </form>
+    <ul class="list-unstyled">
+      {% for comment in comments %}
+        <li class="mb-2 {% cycle 'bg-dark' 'bg-secondary' %}">
+          <div class="p-3 rounded text-white">
+            <strong>{{ comment.user.username }} ({{ comment.created_at|date:"Y-m-d H:i" }}):</strong> {{ comment.text }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}

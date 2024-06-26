@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Record
+from .models import Record, RecordComment
 
 
 class SignUpForm(UserCreationForm):
@@ -49,3 +49,11 @@ class AddRecordForm(forms.ModelForm):
     class Meta:
         model = Record
         exclude = ("user",)
+
+# Create Comment
+class RecordCommentForm(forms.ModelForm):
+    text = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder": "Text", "class": "form-control"}), label="")
+
+    class Meta:
+        model = RecordComment
+        fields = ('text',)
