@@ -1,9 +1,36 @@
-{% extends "base.html" %} 
+{% extends "base.html" %} {% block content %} {% if user.is_authenticated %}
 
-{% block content %}
-
-
-{% if user.is_authenticated %}
+<div class="card-body">
+  <form method="get" class="form-inline">
+    <div class="input-group mb-2">
+      <div class="input-group-append">
+        <label for="company_name"><b>Company Name:</b></label>
+        <span class="form-control">{{ record_filter.form.company_name }}</span>
+      </div>
+      <div class="input-group-append">
+        <label for="email"><b>Email:</b></label>
+        <span class="form-control">{{ record_filter.form.email }}</span>
+      </div>
+      <div class="input-group-append">
+        <label for="created_at"><b>Created At:</b></label>
+        <span class="form-control">{{ record_filter.form.created_at }}</span>
+      </div>
+      <div class="input-group-append">
+        <label for="first_name"><b>First Name:</b></label>
+        <span class="form-control">{{ record_filter.form.first_name }}</span>
+      </div>
+      <div class="input-group-append">
+        <label for="last_name"><b>Last Name:</b></label>
+        <span class="form-control">{{ record_filter.form.last_name }}</span>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-success mb-2 h-100 mx-auto" type="submit">
+          Search
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
 
 <table class="table table-striped">
   <thead class="table-dark">
@@ -21,46 +48,59 @@
     </tr>
   </thead>
   <tbody>
-
-{% if records %}
-    {% for record in records %}
-      <tr>
-        <td><a href="{% url 'record' record.id %}">{{ record.company_name }}</a></td>
-        <td><a href="{% url 'record' record.id %}">{{ record.first_name }}
-        {{ record.last_name }}</a></td>
-        <td>{{ record.email }}</td>
-        <td>{{ record.phone }}</td>
-        <td>{{ record.address }}</td>
-        <td>{{ record.city }}</td>
-        <td>{{ record.state }}</td>
-        <td>{{ record.zipcode }}</td>
-        <td>{{ record.created_at }}</td>
-        <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
-      </tr>
-    {% endfor %}
-{% endif %}
+    {% if records %} {% for record in records %}
+    <tr>
+      <td>
+        <a href="{% url 'record' record.id %}">{{ record.company_name }}</a>
+      </td>
+      <td>
+        <a href="{% url 'record' record.id %}"
+          >{{ record.first_name }} {{ record.last_name }}</a
+        >
+      </td>
+      <td>{{ record.email }}</td>
+      <td>{{ record.phone }}</td>
+      <td>{{ record.address }}</td>
+      <td>{{ record.city }}</td>
+      <td>{{ record.state }}</td>
+      <td>{{ record.zipcode }}</td>
+      <td>{{ record.created_at }}</td>
+      <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
     </tr>
+    {% endfor %} {% endif %}
   </tbody>
 </table>
 
 {% else %}
-    <div class="col-md-6 offset-md-3">
-    <h1>Login</h1>
-    <br/>
-    <form method="POST" action="{% url 'home' %}">
-        {% csrf_token %}
+<div class="col-md-6 offset-md-3">
+  <h1>Login</h1>
+  <br />
+  <form method="POST" action="{% url 'home' %}">
+    {% csrf_token %}
 
-      <div class="mb-3">
-        <input type="text" class="form-control" name="username", placeholder="Username" required>
-      </div>
-      <br/>
-      <div class="mb-3">
-        <input type="password" class="form-control" name="password", placeholder="Password" required>
-      </div>
-      <br/>
-      <button type="submit" class="btn btn-secondary">Login</button>
-    </form>
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        name="username"
+        ,
+        placeholder="Username"
+        required
+      />
     </div>
-{% endif %}
-
-{% endblock %}
+    <br />
+    <div class="mb-3">
+      <input
+        type="password"
+        class="form-control"
+        name="password"
+        ,
+        placeholder="Password"
+        required
+      />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-secondary">Login</button>
+  </form>
+</div>
+{% endif %} {% endblock %}

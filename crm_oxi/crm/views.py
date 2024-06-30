@@ -4,25 +4,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import SignUpForm, AddRecordForm, RecordCommentForm
 from .models import Record, RecordComment
+from .filters import RecordFilter
 
 
 def home(request):
     records = Record.objects.all()
-    # Checkto see if logging in
+    home = Record.objects.order_by('-created_at')
+    record_filter = RecordFilter(request.GET, queryset=home)
+    filtered_records = record_filter.qs
+    context = {"records": filtered_records, "record_filter": record_filter}
+    
+    # Check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        #Authenticate
+        # Authenticate
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             messages.success(request, "You Have Been Logged In!")
-            return redirect('home')
+            return render(request, 'home.html', context)
         else:
-            messages.success(request, "There Was An Error Logging In, Pleace Try Again ...")
+            messages.error(request, "There Was An Error Logging In, Please Try Again ...")
             return redirect('home')
     else:
-        return render(request, 'home.html', {'records':records})
+        return render(request, 'home.html', context)
 
 def logout_user(request):
     logout(request)
