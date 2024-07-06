@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import SignUpForm, AddRecordForm, RecordCommentForm
@@ -10,9 +11,19 @@ from .filters import RecordFilter
 def home(request):
     records = Record.objects.all()
     home = Record.objects.order_by('-created_at')
+    
     record_filter = RecordFilter(request.GET, queryset=home)
     filtered_records = record_filter.qs
-    context = {"records": filtered_records, "record_filter": record_filter}
+    
+    paginator = Paginator(filtered_records, 15)  
+    page_number = request.GET.get("page")  
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        "records": page_obj.object_list,
+        "record_filter": record_filter,
+        "page_obj": page_obj
+    }
     
     # Check to see if logging in
     if request.method == 'POST':
