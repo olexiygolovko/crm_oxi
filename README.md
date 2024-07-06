@@ -6,3 +6,4 @@ Features:
 - change and delete organizations
 - search by companies
 - filtering records
+- pagination on home page for resords
