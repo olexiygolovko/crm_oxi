@@ -5,3 +5,4 @@ Features:
 - add comments on the status in the company record
 - change and delete organizations
 - search by companies
+- filtering records
