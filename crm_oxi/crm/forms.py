@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Record, RecordComment
+from .models import Record, RecordComment, RecordTask
 
 
 class SignUpForm(UserCreationForm):
@@ -57,3 +57,11 @@ class RecordCommentForm(forms.ModelForm):
     class Meta:
         model = RecordComment
         fields = ('text',)
+        
+class RecordTaskForm(forms.ModelForm):
+    class Meta:
+        model = RecordTask
+        fields = ['title', 'description', 'status', 'due_date']
+        widgets = {
+            'due_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }

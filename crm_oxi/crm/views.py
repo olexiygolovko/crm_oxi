@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddRecordForm, RecordCommentForm
-from .models import Record, RecordComment
+from .forms import SignUpForm, AddRecordForm, RecordCommentForm, RecordTaskForm
+from .models import Record, RecordComment, RecordTask
 from .filters import RecordFilter
 
 
@@ -64,24 +64,28 @@ def register_user(request):
     
     return render(request, 'register.html', {'form':form})
 
-@login_required 
+@login_required
 def customer_record(request, pk):
-    if request.user.is_authenticated:
-        customer_record = Record.objects.get(id=pk)
-        comments = RecordComment.objects.filter(record=customer_record).order_by('-created_at')
-        form = RecordCommentForm(request.POST or None)
-        if request.method == 'POST':
-            if form.is_valid():
-                comment = form.save(commit=False)
-                comment.record = customer_record
-                comment.user = request.user
-                comment.save()
-                messages.success(request, "Comment has been added!")
-                return redirect('customer_record', pk=pk)
-        return render(request, 'record.html', {'customer_record': customer_record, 'comments': comments, 'form': form})
-    else:
-        messages.success(request, "You must be logged in to view that page...")
-        return redirect('home')
+    customer_record = Record.objects.get(id=pk)
+    comments = RecordComment.objects.filter(record=customer_record).order_by('-created_at')
+    tasks = RecordTask.objects.filter(record=customer_record).order_by('-due_date')
+
+    form = RecordCommentForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.record = customer_record
+            comment.user = request.user
+            comment.save()
+            messages.success(request, "Comment has been added!")
+            return redirect('customer_record', pk=pk)
+    
+    return render(request, 'record.html', {
+        'customer_record': customer_record, 
+        'comments': comments, 
+        'tasks': tasks, 
+        'form': form
+    })
 
 def delete_record(request, pk):
     if request.user.is_authenticated:
@@ -119,3 +123,46 @@ def update_record(request, pk):
         messages.error(request, "You Must Be Logged In...")
         return redirect('home') 
 
+
+@login_required
+def view_tasks_for_record(request, pk):
+    record = get_object_or_404(Record, id=pk)
+    tasks = RecordTask.objects.filter(record=record).order_by('-due_date')
+    return render(request, 'tasks.html', {'record': record, 'tasks': tasks})
+
+@login_required
+def add_task_to_record(request, pk):
+    customer_record = get_object_or_404(Record, pk=pk)
+    form = RecordTaskForm(request.POST or None)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.record = customer_record
+            task.save()
+            messages.success(request, "Task added successfully!")
+            return redirect('customer_record', pk=pk)
+    
+    return render(request, 'add_task.html', {'form': form, 'customer_record': customer_record})
+
+@login_required
+def edit_task(request, pk, task_id):
+    customer_record = get_object_or_404(Record, pk=pk)
+    task = get_object_or_404(RecordTask, pk=task_id)
+    form = RecordTaskForm(request.POST or None, instance=task)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Task updated successfully!")
+            return redirect('customer_record', pk=pk)
+    
+    return render(request, 'edit_task.html', {'form': form, 'customer_record': customer_record})
+
+@login_required
+def delete_task(request, pk, task_id):
+    customer_record = get_object_or_404(Record, pk=pk)
+    task = get_object_or_404(RecordTask, pk=task_id)
+    task.delete()
+    messages.success(request, "Task deleted successfully!")
+    return redirect('customer_record', pk=pk)

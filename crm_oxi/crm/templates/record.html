@@ -4,6 +4,7 @@
 <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
 <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
 <a href="{% url 'update_record' customer_record.id %}" class="btn btn-secondary">Update Record</a>
+<a href="{% url 'add_task_to_record' customer_record.id %}" class="btn btn-primary">Add Task</a>
 <br></br>
 
 <div class="card">
@@ -25,6 +26,40 @@
   </div>
 </div>
 
+<!-- Tasks -->
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Tasks</h3>
+  </div>
+  <div class="card-body">
+    {% if tasks %}
+      <ul class="list-group">
+        {% for task in tasks %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ task.title }}</strong> - {{ task.status }}
+                <p>{{ task.description }}</p>
+                <p>Due: {{ task.due_date|date:"Y-m-d H:i" }}</p>
+                <p>Time remaining: {{ task.time_remaining }}</p>
+              </div>
+              <div>
+                {% if task.is_overdue %}
+                  <span class="badge bg-danger">Overdue</span>
+                {% endif %}
+                <a href="{% url 'edit_task' customer_record.id task.id %}" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="{% url 'delete_task' customer_record.id task.id %}" class="btn btn-danger btn-sm">Delete</a>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No tasks available for this record.</p>
+    {% endif %}
+  </div>
+</div>
+
 <!-- Comments -->
 <div class="card mt-4">
   <div class="card-header">
@@ -33,7 +68,7 @@
   <div class="card-body">
     <form method="post" class="form-inline">
       {% csrf_token %}
-      <div styles="width:600px;" class="input-group mb-2">
+      <div style="width:600px;" class="input-group mb-2">
         <span class="form-control">{{ form.as_p }}</span>
         <div class="input-group-append">
           <button type="submit" class="btn btn-success h-100">Add</button>
@@ -51,4 +86,5 @@
     </ul>
   </div>
 </div>
+
 {% endblock %}

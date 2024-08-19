@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crm',
     'django_filters',
+    'task_manager',
     
 ]
 

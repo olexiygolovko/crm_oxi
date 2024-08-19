@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Tasks for {{ record }}</h2>
+  <ul>
+    {% for task in tasks %}
+      <li>
+        <strong>{{ task.title }}</strong> - {{ task.status }} - Due: {{ task.due_date|date:"Y-m-d H:i" }}
+        <p>{{ task.description }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'customer_record' record.id %}">Back to Record</a>
+  
+{% endblock %}
