@@ -7,3 +7,5 @@ Features:
 - search by companies
 - filtering records
 - pagination on home page for resords
+- task manager for global challenges
+- task manager for company record
