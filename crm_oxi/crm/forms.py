@@ -57,7 +57,8 @@ class RecordCommentForm(forms.ModelForm):
     class Meta:
         model = RecordComment
         fields = ('text',)
-        
+
+# Create Task for Record     
 class RecordTaskForm(forms.ModelForm):
     class Meta:
         model = RecordTask

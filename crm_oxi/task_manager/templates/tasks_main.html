@@ -1,0 +1,37 @@
+<title>Tasks Main</title>
+{% extends 'base.html' %}
+{% block content %}
+
+<div><a href="{% url 'add_task' %}" class="btn btn-primary">Add Task<a></div>
+  <br/>
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Task title</th>
+        <th scope="col">Task description</th>
+        <th scope="col">Created At</th>
+        <th scope="col">Deadline</th>
+        <th scope="col">Status</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if tasks %} {% for task in tasks %}
+      <tr>
+        <td><a href="{% url 'edit_task' task.id %}"><strong>{{ task.title }}</a></strong></td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.created_at }}</td>
+        <td>{{ task.due_date }}</td>
+        <td>{{ task.status }}</td>
+        <td><a href="{% url 'edit_task' task.id %}" class="btn btn-secondary">Update Task</a></td>
+        <td><a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a></td>
+      </tr>
+      {% endfor %} {% endif %}
+  
+    </tbody>
+  </table>
+
+  <a href="/">Back</a>
+  
+{% endblock %}
