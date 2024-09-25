@@ -1,1 +1,1 @@
-web: gunicorn crm_oxi.wsgi:application
+web: python crm_oxi/manage.py runserver
