@@ -21,8 +21,8 @@
       <tr>
         <td><a href="{% url 'edit_task' task.id %}"><strong>{{ task.title }}</a></strong></td>
         <td>{{ task.description }}</td>
-        <td>{{ task.created_at }}</td>
-        <td>{{ task.due_date }}</td>
+        <td>{{ task.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ task.due_date|date:"Y-m-d H:i" }}</td>
         <td>{{ task.status }}</td>
         <td><a href="{% url 'edit_task' task.id %}" class="btn btn-secondary">Update Task</a></td>
         <td><a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a></td>

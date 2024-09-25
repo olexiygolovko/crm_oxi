@@ -1,12 +1,15 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
-<h2>Add Task </h2>
+<div class="col-md-6 offset-md-3">
+<h1>Add Task </h1>
+<br/>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Add Task</button>
-</form>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <br/>
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </form>
+</div>
 
 {% endblock %}

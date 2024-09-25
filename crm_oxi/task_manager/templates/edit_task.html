@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Edit Task {{ task.title }}</h2>
+<div class="col-md-6 offset-md-3">
+    <h1>Edit Task {{ task.title }}</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Update Task</button>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update Task</button>
+    </form>
 
+</div>
 {% endblock %}

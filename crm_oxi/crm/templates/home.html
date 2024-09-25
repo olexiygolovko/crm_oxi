@@ -1,5 +1,7 @@
 {% extends "base.html" %} {% block content %} {% if user.is_authenticated %}
 
+<div><a href="{% url 'add_record' %}" class="btn btn-primary">Add Cpmpany<a></div>
+<br/>
 <div class="card-body">
   <form method="get" class="form-inline">
     <div class="input-group mb-2">
@@ -23,9 +25,9 @@
         <label for="last_name"><b>Last Name:</b></label>
         <span class="form-control">{{ record_filter.form.last_name }}</span>
       </div>
-      <div class="text-center">
-        <p></p>
-        <button class="btn btn-success mb-1 h-80 mx-auto" type="submit">
+      <br/>
+      <div class="p-4">
+          <button class="btn btn-success"  type="submit">
           Search
         </button>
       </div>
@@ -65,7 +67,7 @@
       <td>{{ record.city }}</td>
       <td>{{ record.state }}</td>
       <td>{{ record.zipcode }}</td>
-      <td>{{ record.created_at }}</td>
+      <td>{{ record.created_at|date:"Y-m-d H:i" }}</td>
       <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
     </tr>
     {% endfor %} {% endif %}
