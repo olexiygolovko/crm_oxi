@@ -1,0 +1,1 @@
+web: gunicorn crm_oxi.wsgi:application
