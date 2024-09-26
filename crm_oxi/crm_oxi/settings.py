@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from dotenv import load_dotenv
+import dj_database_url
 from pathlib import Path
 from decouple import config
 
@@ -30,7 +31,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['crmoxi.up.railway.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -84,6 +85,7 @@ WSGI_APPLICATION = 'crm_oxi.wsgi.application'
 
 DATABASES = {
     'default': {
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DATABASE_NAME'),
         'USER': os.getenv('DATABASE_USER'),
