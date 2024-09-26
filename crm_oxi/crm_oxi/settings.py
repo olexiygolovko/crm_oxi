@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'crm_oxi.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DATABASE_NAME'),
         'USER': os.getenv('DATABASE_USER'),
