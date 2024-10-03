@@ -16,4 +16,4 @@ ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE crm_oxi.settings
 
 
-CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "crm_oxi.wsgi:application"]
