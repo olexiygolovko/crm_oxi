@@ -9,3 +9,5 @@ Features:
 - pagination on home page for resords
 - task manager for global challenges
 - task manager for company record
+- Modal window to the task formation
+
