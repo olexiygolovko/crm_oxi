@@ -10,6 +10,9 @@ class Record(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
+    web_site = models.URLField(
+        max_length=128, db_index=True, unique=True, blank=True, null=True
+    )
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)

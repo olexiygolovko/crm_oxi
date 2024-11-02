@@ -1,90 +1,132 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% block content %}
 
-<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
-<a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
-<a href="{% url 'update_record' customer_record.id %}" class="btn btn-secondary">Update Record</a>
-<a href="{% url 'add_task_to_record' customer_record.id %}" class="btn btn-primary">Add Task</a>
-<br></br>
+<div class="mb-3">
+  <a href="{% url 'home' %}" class="btn btn-dark">Back</a>
+  
+  {% if user.is_staff or user == customer_record.owner %}
+  <a href="{% url 'update_record' customer_record.id %}" class="btn btn-secondary">Update Record</a>
+  <a href="{% url 'delete_record' customer_record.id %}" class="btn btn-danger">Delete</a>
 
-<div class="card">
-  <div class="card-header">
-    {{ customer_record.company_name }}
-  </div>
-  <div class="card-body">
-    <p class="card-text">
-      <strong>Name: </strong>{{ customer_record.first_name }} {{ customer_record.last_name }}
-    </p>
-    <p class="card-text"><strong>Email: </strong>{{ customer_record.email }}</p>
-    <p class="card-text"><strong>Phone: </strong>{{ customer_record.phone }}</p>
-    <p class="card-text"><strong>Address: </strong>{{ customer_record.address }}</p>
-    <p class="card-text"><strong>City: </strong>{{ customer_record.city }}</p>
-    <p class="card-text"><strong>State: </strong>{{ customer_record.state }}</p>
-    <p class="card-text"><strong>Zipcode: </strong>{{ customer_record.zipcode }}</p>
-    <p class="card-text"><strong>Created At: </strong>{{ customer_record.created_at }}</p>
-    <p class="card-text"><strong>Id: </strong>{{ customer_record.id }}</p>
-  </div>
+  {% endif %}
 </div>
 
-<!-- Tasks -->
+<div class="card-group">
+  <!-- Customer Record Card -->
+  <div class="col-md-6 mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5>{{ customer_record.company_name }}</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Name:</strong> {{ customer_record.first_name }} {{ customer_record.last_name }}</p>
+        <p><strong>Email:</strong> {{ customer_record.email }}</p>
+        <p><strong>Phone:</strong> {{ customer_record.phone }}</p>
+        <p><strong>Web Site:</strong> <a href="{{ customer_record.web_site }}" target="_blank">{{ customer_record.web_site }}</a></p>
+        <p><strong>Address:</strong> {{ customer_record.address }}</p>
+        <p><strong>City:</strong> {{ customer_record.city }}</p>
+        <p><strong>State:</strong> {{ customer_record.state }}</p>
+        <p><strong>Zipcode:</strong> {{ customer_record.zipcode }}</p>
+        <p><strong>Created At:</strong> {{ customer_record.created_at }}</p>
+        <p><strong>Id:</strong> {{ customer_record.id }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="col-md-6 mb-4" style="max-height: 600px; overflow-y: auto">
+    <div class="card">
+      <div class="card-header">
+        <h5>Comments</h5>
+      </div>
+      <div class="card-body">
+        {% if user.is_authenticated %}
+        <form method="post" class="input-group mb-3">
+          {% csrf_token %}
+          <div class="mb-3 w-100">
+            {{ form.as_p }}
+            <button type="submit" name="add_comment" class="btn btn-success input-group-append text-end">Add</button>
+          </div>
+        </form>
+        {% endif %}
+        <ul class="list-unstyled">
+          {% for comment in comments %}
+          <li class="mb-2 {% cycle 'bg-light' 'bg-secondary text-white' %} p-3 rounded">
+            <strong>{{ comment.user.username }} ({{ comment.created_at|date:"Y-m-d-H:i" }}):</strong>
+            <p class="mb-0">{{ comment.text }}</p>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<!-- Tasks Section -->
 <div class="card mt-4">
-  <div class="card-header">
-    <h3>Tasks</h3>
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5>Tasks</h5>
+    {% if user.is_authenticated %}
+    <button
+      type="button"
+      class="btn btn-success btn-sm"
+      data-bs-toggle="modal"
+      data-bs-target="#taskModal">
+      Add Task
+    </button>
+    {% endif %}
   </div>
   <div class="card-body">
     {% if tasks %}
-      <ul class="list-group">
-        {% for task in tasks %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <strong>{{ task.title }}</strong> - {{ task.status }}
-                <p>{{ task.description }}</p>
-                <p>Due: {{ task.due_date|date:"Y-m-d H:i" }}</p>
-                <p>Time remaining: {{ task.time_remaining }}</p>
-              </div>
-              <div>
-                {% if task.is_overdue %}
-                  <span class="badge bg-danger">Overdue</span>
-                {% endif %}
-                <a href="{% url 'edit_task' customer_record.id task.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                <a href="{% url 'delete_task' customer_record.id task.id %}" class="btn btn-danger btn-sm">Delete</a>
-              </div>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
+    <ul class="list-group">
+      {% for task in tasks %}
+      <li class="list-group-item">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <strong>{{ task.title }}</strong> - {{ task.status }}
+            <p>{{ task.description }}</p>
+            <p><small>Due: {{ task.due_date|date:"Y-m-d H:i" }}</small></p>
+            <p><small>Time remaining: {{ task.time_remaining }}</small></p>
+            {% if task.is_overdue %}
+            <span class="badge bg-danger">Overdue</span>
+            {% endif %}
+          </div>
+          {% if user.is_staff or user == task.assigned_user %}
+          <div class="text-end">
+            <a href="{% url 'edit_task' customer_record.id task.id %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+            <a href="{% url 'delete_task' customer_record.id task.id %}" class="btn btn-outline-danger btn-sm">Delete</a>
+          </div>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
     {% else %}
-      <p>No tasks available for this record.</p>
+    <p class="text-muted">No tasks available for this record.</p>
     {% endif %}
   </div>
 </div>
 
-<!-- Comments -->
-<div class="card mt-4">
-  <div class="card-header">
-    <h3>Comments</h3>
-  </div>
-  <div class="card-body">
-    <form method="post" class="form-inline">
-      {% csrf_token %}
-      <div style="width:600px;" class="input-group mb-2">
-        <span class="form-control">{{ form.as_p }}</span>
-        <div class="input-group-append">
-          <button type="submit" class="btn btn-success h-100">Add</button>
+  <!-- Modal window for task addition -->
+  <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="taskModalLabel">Add New Task</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {% if user.is_authenticated %}
+          <form method="post">
+            {% csrf_token %}
+            {{ task_form.as_p }}
+            <button type="submit" name="add_task" class="btn btn-primary">Add Task</button>
+          </form>
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
-    </form>
-    <ul class="list-unstyled">
-      {% for comment in comments %}
-        <li class="mb-2 {% cycle 'bg-dark' 'bg-secondary' %}">
-          <div class="p-3 rounded text-white">
-            <strong>{{ comment.user.username }} ({{ comment.created_at|date:"Y-m-d H:i" }}):</strong> {{ comment.text }}
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+    </div>
   </div>
-</div>
-
 {% endblock %}

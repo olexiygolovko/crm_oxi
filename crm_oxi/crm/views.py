@@ -46,45 +46,44 @@ def logout_user(request):
     messages.success(request, "You Have Been Logged Out...")
     return redirect('home')
 
-def register_user(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # Authenticate and login
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, "You Have Successfully Registered! Welcome!")
-            return redirect('home') 
-    else:
-        form = SignUpForm()    
-        return render(request, 'register.html', {'form':form})
-    
-    return render(request, 'register.html', {'form':form})
 
 @login_required
 def customer_record(request, pk):
     customer_record = Record.objects.get(id=pk)
-    comments = RecordComment.objects.filter(record=customer_record).order_by('-created_at')
-    tasks = RecordTask.objects.filter(record=customer_record).order_by('-due_date')
+    comments = RecordComment.objects.filter(
+        record=customer_record).order_by('-created_at')
+    tasks = RecordTask.objects.filter(
+        record=customer_record).order_by('-due_date')
 
-    form = RecordCommentForm(request.POST or None)
+    # Comment form
+    comment_form = RecordCommentForm(request.POST or None)
+    # Form for the task
+    task_form = RecordTaskForm(request.POST or None)
+
     if request.method == 'POST':
-        if form.is_valid():
-            comment = form.save(commit=False)
+        # Saving a comment
+        if 'add_comment' in request.POST and comment_form.is_valid():
+            comment = comment_form.save(commit=False)
             comment.record = customer_record
             comment.user = request.user
             comment.save()
             messages.success(request, "Comment has been added!")
             return redirect('customer_record', pk=pk)
-    
+
+        # Saving a task
+        elif 'add_task' in request.POST and task_form.is_valid():
+            task = task_form.save(commit=False)
+            task.record = customer_record
+            task.save()
+            messages.success(request, "Task added successfully!")
+            return redirect('customer_record', pk=pk)
+
     return render(request, 'record.html', {
-        'customer_record': customer_record, 
-        'comments': comments, 
-        'tasks': tasks, 
-        'form': form
+        'customer_record': customer_record,
+        'comments': comments,
+        'tasks': tasks,
+        'form': comment_form,
+        'task_form': task_form,
     })
 
 def delete_record(request, pk):

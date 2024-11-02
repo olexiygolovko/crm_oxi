@@ -13,3 +13,5 @@ staticfiles/
 *.log
 *.tmp
 *.bak
+crm_oxi/docker-compose.yml
+crm_oxi/Dockerfile
