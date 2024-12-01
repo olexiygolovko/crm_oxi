@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'crm_oxi.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default='postgres://USER:PASSWORD@HOST:PORT/NAME')
+    'default': dj_database_url.config(default=config('DATABASE_URL'))
 }
 
 # DATABASES = {
