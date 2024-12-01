@@ -13,7 +13,6 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 from pathlib import Path
-import dj_database_url
 import environ
 
 env = environ.Env()
