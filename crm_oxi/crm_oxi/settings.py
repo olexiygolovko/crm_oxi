@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://crm-oxi.onrender.com']
+ALLOWED_HOSTS = ['https://crm-oxi.onrender.com', 'crm-oxi.onrender.com']
 
 
 # Application definition
