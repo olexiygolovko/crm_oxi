@@ -1,1 +1,1 @@
-web: gunicorn crm_oxi.wsgi
+web: gunicorn crm_oxi.crm_oxi.wsgi
