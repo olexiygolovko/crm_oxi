@@ -13,7 +13,6 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 from pathlib import Path
-from decouple import config
 import dj_database_url
 import environ
 
@@ -29,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -91,19 +90,19 @@ WSGI_APPLICATION = 'crm_oxi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),
-        'USER': config('DATABASE_USER'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST'),
-        'PORT': config('DATABASE_PORT'),
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'PORT': os.environ.get('DATABASE_PORT'),
         'OPTIONS': {
             'client_encoding': 'UTF8',
         },
     }
 }
 
-DATABASES['default'] = dj_database_url.parse(
-    "postgresql://crm_oxi_user:QEZZk0BCfPkLCukjWNr0HFhz8hmlpD4o@dpg-ct64m4t6l47c73fv2d9g-a.oregon-postgres.render.com/crm_oxi")
+database_url = os.environ.get("DATABASE_URL")
+DATABASES['default'] = dj_database_url.parse(database_url)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
